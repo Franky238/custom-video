@@ -1,0 +1,46 @@
+{
+  "name": "custom_video",
+  "version": "1.0.0",
+  "author": "Frantisek Ferko",
+  "description": "",
+  "directories": {
+    "root": "/",
+    "static": "src/main/resources/static/",
+    "src": "src/main/resources/static/src/",
+    "dist": "src/main/resources/static/dist/",
+    "css": "src/main/resources/static/src/design/css/",
+    "app": "src/main/resources/static/src/app/",
+    "design": "src/main/resources/static/src/design/",
+    "vendor": "src/main/resources/static/vendor/",
+    "targetFiles": "target/classes/static/",
+    "application": "application/"
+  },
+  "appFiles": {
+    "compressed": "app.min.js",
+    "uncompressed": "app.js",
+    "deps": "deps.min.js"
+  },
+  "scripts": {
+    "start": "gulp dev"
+  },
+  "devDependencies": {
+    "eslint": "^3.9.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-clean": "latest",
+    "gulp-compass": "latest",
+    "gulp-concat": "latest",
+    "gulp-connect": "latest",
+    "gulp-copy": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-uglify": "latest",
+    "gulp-watch": "latest",
+    "underscore": "latest"
+  },
+  "dependencies": {},
+  "license": "GFDL-1.3"
+}
