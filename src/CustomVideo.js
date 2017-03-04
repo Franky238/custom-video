@@ -37,19 +37,19 @@ var CustomVideo = (function (videoRenderer, videoController) {
                             id: 'playPause',
                             title: 'Play/Pause'
                         },
-                        next: {
-                            name: 'Next',
-                            className: 'next',
-                            id: 'next',
-                            title: 'Next'
-                        },
                         previous: {
                             name: 'Previous',
                             className: 'previous',
                             id: 'previous',
                             title: 'Previous'
                         },
-                        fullscreen: false
+                        next: {
+                            name: 'Next',
+                            className: 'next',
+                            id: 'next',
+                            title: 'Next'
+                        }
+                        // fullscreen: false // TODO
                     },
                     sourceLoop: true
                 }

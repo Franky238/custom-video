@@ -194,6 +194,10 @@ var VideoRenderer = (function (config, videoController) {
             var newSrc = videoController.toggleSource(index, options);
 
             this.toggleSrc(videoElement, newSrc);
+        },
+
+        renderPlayPause: function () {
+            videoController.playPause(videoElement);
         }
     }
 

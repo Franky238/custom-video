@@ -37,6 +37,14 @@ var VideoController = (function () {
             return srcIndex;
         },
 
+        playPause: function (videoElement) {
+            if (videoElement.paused || videoElement.ended) {
+                videoElement.play();
+            } else {
+                videoElement.pause();
+            }
+        },
+
         resolveMethod: function (buttonType) {
             var result;
 
