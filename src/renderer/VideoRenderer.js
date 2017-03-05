@@ -14,48 +14,6 @@ var VideoRenderer = (function (config, videoController) {
         },
 
         /**
-         * Factory for source tag template
-         *
-         * @param src
-         * @param type
-         * @returns {string}
-         */
-        sourceTag: function (src, type) {
-            type = type || config['defaultVideoType'];
-
-            return '<source src="' + src + '" type="video/' + type + '">';
-        },
-
-        /**
-         * Render video source tag
-         *
-         * @param source
-         * @param element
-         * TODO create a Array input for both situation - array of string and array of objects
-         */
-        renderSources: function (source, element) {
-            var response = [];
-            var self = this;
-            var isSourceNotValid = !_.isString(source) && !_.isObject(source);
-
-            if (isSourceNotValid) {
-                throw new Error('Parameter source is not compatible! It should be String or Object. See docs');
-            }
-
-            if (_.isObject(source)) {
-                Object.keys(source).forEach(function (type) {
-                    response.push(self.sourceTag(source[type], type));
-                })
-            } else {
-                response.push(self.sourceTag(source));
-            }
-
-            element.innerHTML += response;
-
-            return response;
-        },
-
-        /**
          * Render an video tag into wrapper
          *
          * @param element
@@ -248,7 +206,7 @@ var VideoRenderer = (function (config, videoController) {
             var progressBarOpts = options['controls']['progressBar'];
             var progressBar = document.createElement('div');
 
-            progressBar.className = 'progressBar';
+            progressBar.className = progressBarOpts['className'];
             progressBar['style'].position = 'relative';
             progressBar['style'].width = progressBarOpts['width'];
             progressBar['style'].height = progressBarOpts['height'];
@@ -266,7 +224,7 @@ var VideoRenderer = (function (config, videoController) {
             var progressBarOpts = options['controls']['progressBar'];
 
             var timeBar = document.createElement('div');
-            timeBar.className = 'timeBar';
+            timeBar.className = progressBarOpts['timeBarClassName'];
             timeBar['style'].position = 'relative';
             timeBar['style'].width = '0px';
             timeBar['style'].height = progressBarOpts['height'];
@@ -386,7 +344,6 @@ var VideoRenderer = (function (config, videoController) {
         /**
          * Update loaded bar
          *
-         * @param bufferEnd
          * @param progressBar
          * @param loadedBar
          */
@@ -402,6 +359,89 @@ var VideoRenderer = (function (config, videoController) {
             var percentage = (bufferEnd/maxDuration)*100;
 
             loadedBar['style'].width = percentage + '%';
+        },
+
+        /**
+         * Render time element for digits
+         *
+         * @param renderTo
+         * @returns {Element}
+         */
+        renderTimeDigits: function (renderTo) {
+            var self = this;
+            var timeElement = document.createElement('div');
+            var timeOpts = options['controls']['time'];
+            var controlsWrapper = renderTo.querySelector('.' + config['controlsWrapper']);
+            var currentTimeElement = this.renderCurrentTime();
+            var durationElement = this.renderFullDuration();
+            var separator = this.renderTimeSeparator();
+
+            timeElement.className = timeOpts['className'];
+
+            timeElement.appendChild(currentTimeElement);
+            timeElement.appendChild(separator);
+            timeElement.appendChild(durationElement);
+
+            controlsWrapper.appendChild(timeElement);
+
+            videoElement.addEventListener('loadedmetadata', function () {
+                self.updateDigits(currentTimeElement, durationElement);
+            });
+
+            videoElement.addEventListener('timeupdate', function () {
+                self.updateDigits(currentTimeElement);
+            });
+
+            return timeElement;
+        },
+
+        /**
+         * Render current time element
+         *
+         * @returns {Element}
+         */
+        renderCurrentTime: function () {
+            return document.createElement('span');
+        },
+
+        /**
+         * Render full duration element
+         *
+         * @returns {Element}
+         */
+        renderFullDuration: function () {
+            return document.createElement('span');
+        },
+
+        /**
+         * Render time separator
+         *
+         * @returns {Element}
+         */
+        renderTimeSeparator: function () {
+            var timeOpts = options['controls']['time'];
+            var separator = document.createElement('span');
+            separator.className = timeOpts['separatorClass'];
+            separator.innerHTML = config['timeSeparator'];
+
+            return separator;
+        },
+
+        /**
+         * Update digits on input elements
+         *
+         * @param currentTimeElement
+         * @param durationElement
+         */
+        updateDigits: function (currentTimeElement, durationElement) {
+            durationElement = durationElement || undefined;
+
+            if (durationElement) {
+                var durationSec = parseInt(videoElement.duration, 10);
+                durationElement.innerHTML = videoController.formatDigits(durationSec);
+            }
+            var currentSec = parseInt(videoElement.currentTime, 10);
+            currentTimeElement.innerHTML = videoController.formatDigits(currentSec);
         }
     }
 

@@ -51,6 +51,23 @@ var VideoController = (function (config) {
             return Math.floor((100 / videoElement.duration) * videoElement.currentTime);
         },
 
+        formatDigits: function (seconds) {
+            var hours = this.pad(parseInt(seconds/3600));
+            var restSeconds = this.pad(parseInt(seconds%3600));
+            var minutes = this.pad(parseInt(restSeconds/60));
+            var rest = this.pad(parseInt(restSeconds%60));
+
+            if(hours == 0) {
+                return minutes + ':' + rest;
+            }
+
+            return hours + ':' + minutes + ':' + rest;
+        },
+
+        pad: function (number) {
+            return number > 10 ? number : '0' + number;
+        },
+
         resolveMethod: function (buttonType) {
             var result;
 
