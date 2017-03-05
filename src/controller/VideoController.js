@@ -47,6 +47,10 @@ var VideoController = (function (config) {
             }
         },
 
+        updateProgressBar: function (videoElement) {
+            return Math.floor((100 / videoElement.duration) * videoElement.currentTime);
+        },
+
         resolveMethod: function (buttonType) {
             var result;
 

@@ -55,6 +55,14 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
                         }
                         // fullscreen: false // Todo
                     },
+                    progressBar: {
+                        enabled: true,
+                        width: '100%', // like in css
+                        height: '10px',
+                        border: '1px solid black',
+                        playedColor: '#ae2',
+                        progressColor: '#eee'
+                    },
                     sourceLoop: true
                 }
             };
@@ -104,6 +112,15 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
 
             if (controls['enabled']) {
                 videoRenderer.renderControls(videoElement, controls['customControls'], wrapper);
+            }
+
+            if (controls['progressBar']['enabled']) {
+                var progressBar = videoRenderer.renderFullProgressBar(wrapper);
+                var timeBar = progressBar.querySelector('.timeBar');
+
+                videoElement.addEventListener('timeupdate', function () {
+                    videoRenderer.updateProgressBar(timeBar);
+                });
             }
         };
 

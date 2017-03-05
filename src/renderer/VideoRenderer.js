@@ -210,6 +210,12 @@ var VideoRenderer = (function (config, videoController) {
             videoController.playPause(videoElement);
         },
 
+        /**
+         * Toggle button to toggleTo param from config
+         *
+         * @param element
+         * @param key
+         */
         toggleButton: function (element, key) {
             var toggleTo = options['controls']['customControls'][key]['toggleTo'];
             var control = options['controls']['customControls'][key];
@@ -231,6 +237,171 @@ var VideoRenderer = (function (config, videoController) {
 
                 element.setAttribute('data-toggled', '0');
             }
+        },
+
+        /**
+         * Render progress bar element
+         *
+         * @returns {Element}
+         */
+        renderProgressBar: function () {
+            var progressBarOpts = options['controls']['progressBar'];
+            var progressBar = document.createElement('div');
+
+            progressBar.className = 'progressBar';
+            progressBar['style'].position = 'relative';
+            progressBar['style'].width = progressBarOpts['width'];
+            progressBar['style'].height = progressBarOpts['height'];
+            progressBar['style'].border = progressBarOpts['border'];
+
+            return progressBar;
+        },
+
+        /**
+         * Render time bar element
+         *
+         * @returns {Element}
+         */
+        renderTimeBar: function () {
+            var progressBarOpts = options['controls']['progressBar'];
+
+            var timeBar = document.createElement('div');
+            timeBar.className = 'timeBar';
+            timeBar['style'].position = 'relative';
+            timeBar['style'].width = '0px';
+            timeBar['style'].height = progressBarOpts['height'];
+            timeBar['style'].backgroundColor = progressBarOpts['playedColor'];
+            timeBar['style'].zIndex = 1;
+
+            return timeBar;
+        },
+
+        /**
+         * Render loaded bar element
+         *
+         * @returns {Element}
+         */
+        renderLoadedBar: function () {
+            var progressBarOpts = options['controls']['progressBar'];
+
+            var timeBar = document.createElement('div');
+            timeBar.className = 'timeBar';
+            timeBar['style'].position = 'absolute';
+            timeBar['style'].top = '0px';
+            timeBar['style'].width = '0px';
+            timeBar['style'].height = progressBarOpts['height'];
+            timeBar['style'].backgroundColor = progressBarOpts['progressColor'];
+            timeBar['style'].zIndex = 0;
+
+            return timeBar;
+        },
+
+        /**
+         * Render progress bar
+         *
+         * @param renderTo
+         */
+        renderFullProgressBar: function (renderTo) {
+            var self = this;
+            var controlsWrapper = renderTo.querySelector('.' + config['controlsWrapper']);
+
+            var progressBar = this.renderProgressBar();
+            var timeBar = this.renderTimeBar();
+            var loadedBar = this.renderLoadedBar();
+
+            progressBar.appendChild(timeBar);
+            progressBar.appendChild(loadedBar);
+            controlsWrapper.appendChild(progressBar);
+
+            // registered drag events
+            var timeDrag = false;
+            progressBar.addEventListener('mousedown', function (event) {
+                timeDrag = true;
+                self.updateVideoTo(event.pageX, progressBar, timeBar);
+            });
+
+            progressBar.addEventListener('mouseup', function (event) {
+                if (timeDrag) {
+                    timeDrag = false;
+                    self.updateVideoTo(event.pageX, progressBar, timeBar);
+                }
+            });
+
+            progressBar.addEventListener('mousemove', function (event) {
+                if (timeDrag) {
+                    self.updateVideoTo(event.pageX, progressBar, timeBar);
+                }
+            });
+
+            videoElement.addEventListener('progress', function() {
+                self.updateLoaded(progressBar, loadedBar);
+            }, false);
+
+            return progressBar;
+        },
+
+        /**
+         * Update the value of progressBar
+         *
+         * @param timeBar
+         */
+        updateProgressBar: function (timeBar) {
+            var percentage = videoController.updateProgressBar(videoElement);
+
+            if (!percentage) {
+                return;
+            }
+
+            timeBar['style'].width = percentage + '%';
+        },
+
+        /**
+         * Manual video update
+         *
+         * @param to
+         * @param progressBar
+         * @param timeBar
+         */
+        updateVideoTo: function (to, progressBar, timeBar) {
+            var maxDuration = videoElement.duration;
+            var position = to - progressBar.offsetLeft; // click position
+            var percentage = 100 * position / progressBar.clientWidth;
+
+            if (!maxDuration) {
+                return;
+            }
+
+            //Check within range
+            if (percentage > 100) {
+                percentage = 100;
+            }
+            if (percentage < 0) {
+                percentage = 0;
+            }
+
+            timeBar['style'].width = percentage + '%';
+            videoElement.currentTime = maxDuration * percentage / 100;
+        },
+
+        /**
+         * Update loaded bar
+         *
+         * @param bufferEnd
+         * @param progressBar
+         * @param loadedBar
+         */
+        updateLoaded: function (progressBar, loadedBar) {
+            var maxDuration = videoElement.duration;
+            var buffer = videoElement.buffered;
+
+            if (!maxDuration || buffer.length < 1) {
+                return;
+            }
+            var bufferEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+
+            var percentage = (bufferEnd/maxDuration)*100;
+
+            loadedBar['style'].width = percentage + '%';
         }
     }
 
