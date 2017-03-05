@@ -82,6 +82,7 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
          */
         var init = function () {
             wrapper = document.querySelector(options['selector']);
+            wrapper['style'].width = options['options']['width'] + 'px';
             videoElement = videoRenderer.renderVideo(wrapper);
             videoRenderer.setOptions(options);
             toggleSource(0);
