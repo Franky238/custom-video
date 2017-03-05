@@ -144,7 +144,6 @@ var VideoRenderer = (function (config, videoController) {
                         controlsWrapper.appendChild(btn);
                     }
                 });
-                element.controls = true; // todo remove after dev
 
                 renderTo.appendChild(controlsWrapper);
             } else {
