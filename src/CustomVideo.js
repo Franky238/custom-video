@@ -6,7 +6,7 @@
  * https://archive.org/download/014674/014674_512kb.mp4
  * }
  */
-var CustomVideo = (function (videoRenderer, videoController) {
+var CustomVideo = (function (videoRenderer, videoController, config) {
 
     /**
      * @param options
@@ -32,10 +32,14 @@ var CustomVideo = (function (videoRenderer, videoController) {
                     enabled: true,
                     customControls: {
                         playPause: {
-                            name: 'Play/Pause',
+                            name: 'Play',
                             className: 'playPause',
                             id: 'playPause',
-                            title: 'Play/Pause'
+                            title: 'Play',
+                            toggleTo: {
+                                name: 'Pause',
+                                title: 'Pause'
+                            }
                         },
                         previous: {
                             name: 'Previous',
@@ -49,7 +53,7 @@ var CustomVideo = (function (videoRenderer, videoController) {
                             id: 'next',
                             title: 'Next'
                         }
-                        // fullscreen: false // TODO
+                        // fullscreen: false // Todo
                     },
                     sourceLoop: true
                 }
@@ -68,6 +72,20 @@ var CustomVideo = (function (videoRenderer, videoController) {
             toggleSource(0);
             handleVideoOptions();
             handleControls();
+
+            document.addEventListener(config['events']['onVideoChanged'], function () {
+                resetControls();
+            });
+            videoElement.addEventListener(config['events']['onVideoPlay'], function () {
+                console.log('Played!')
+            });
+            videoElement.addEventListener(config['events']['onVideoPause'], function () {
+                console.log('Paused!')
+            });
+            videoElement.addEventListener(config['events']['onVideoEnded'], function () {
+                console.log('Ended!');
+                resetControls();
+            });
         };
 
         // Private methods
@@ -109,6 +127,11 @@ var CustomVideo = (function (videoRenderer, videoController) {
             videoRenderer.renderPrevious();
         };
 
+        var resetControls = function () {
+            videoRenderer.removeControls();
+            handleControls();
+        };
+
         // Execute construct
         init();
 
@@ -121,4 +144,6 @@ var CustomVideo = (function (videoRenderer, videoController) {
 
     return CustomVideo;
 
-})(VideoRenderer, VideoController);
+})(VideoRenderer, VideoController, Config);
+
+new CustomVideo();

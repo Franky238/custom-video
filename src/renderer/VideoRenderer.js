@@ -124,7 +124,7 @@ var VideoRenderer = (function (config, videoController) {
 
             if (!!customControls) {
                 var controlsWrapper = document.createElement('div');
-                controlsWrapper.className = 'controls-wrapper';
+                controlsWrapper.className = config['controlsWrapper'];
 
                 Object.keys(customControls).forEach(function (item) {
                     if (!!customControls[item]) {
@@ -138,16 +138,25 @@ var VideoRenderer = (function (config, videoController) {
                         var method = videoController.resolveMethod(item);
                         btn.addEventListener('click', function () {
                             self[method]();
+                            self.toggleButton(this, item);
                         });
 
                         controlsWrapper.appendChild(btn);
                     }
                 });
+                element.controls = true; // todo remove after dev
 
                 renderTo.appendChild(controlsWrapper);
             } else {
                 element.controls = true;
             }
+        },
+
+        /**
+         * Remove controls wrapper
+         */
+        removeControls: function () {
+            document.querySelector('.' + config['controlsWrapper']).remove();
         },
 
         /**
@@ -184,6 +193,7 @@ var VideoRenderer = (function (config, videoController) {
             var newSrc = videoController.toggleSource(index, options);
 
             this.toggleSrc(videoElement, newSrc);
+            document.dispatchEvent(new Event(config['events']['onVideoChanged']));
         },
 
         /**
@@ -194,10 +204,34 @@ var VideoRenderer = (function (config, videoController) {
             var newSrc = videoController.toggleSource(index, options);
 
             this.toggleSrc(videoElement, newSrc);
+            document.dispatchEvent(new Event(config['events']['onVideoChanged']));
         },
 
         renderPlayPause: function () {
             videoController.playPause(videoElement);
+        },
+
+        toggleButton: function (element, key) {
+            var toggleTo = options['controls']['customControls'][key]['toggleTo'];
+            var control = options['controls']['customControls'][key];
+            var dataToggle = element['attributes']['data-toggled'];
+            var isToggled = dataToggle === undefined ? undefined : parseInt(dataToggle['value']);
+
+            if (toggleTo && !isToggled) {
+                toggleTo.id === undefined || (element.id = toggleTo.id);
+                toggleTo.className === undefined || (element.className = toggleTo.className);
+                toggleTo.title === undefined || (element.title = toggleTo.title);
+                toggleTo.name === undefined || (element.innerHTML = toggleTo.name);
+
+                element.setAttribute('data-toggled', '1');
+            } else if (isToggled) {
+                control.id === undefined || (element.id = control.id);
+                control.className === undefined || (element.className = control.className);
+                control.title === undefined || (element.title = control.title);
+                control.name === undefined || (element.innerHTML = control.name);
+
+                element.setAttribute('data-toggled', '0');
+            }
         }
     }
 

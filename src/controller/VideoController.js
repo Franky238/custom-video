@@ -1,4 +1,4 @@
-var VideoController = (function () {
+var VideoController = (function (config) {
     var srcIndex = 0;
 
     return {
@@ -40,8 +40,10 @@ var VideoController = (function () {
         playPause: function (videoElement) {
             if (videoElement.paused || videoElement.ended) {
                 videoElement.play();
+                videoElement.dispatchEvent(new Event(config['events']['onVideoPlay']))
             } else {
                 videoElement.pause();
+                videoElement.dispatchEvent(new Event(config['events']['onVideoPause']))
             }
         },
 
