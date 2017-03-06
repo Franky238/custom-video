@@ -8,7 +8,9 @@ var Config = (function () {
             onVideoChanged: 'onVideoChanged',
             onVideoPlay: 'onVideoPlay',
             onVideoPause: 'onVideoPause',
-            onVideoEnded: 'ended'
+            onVideoEnded: 'ended',
+            onVideoMute: 'onVideoMute',
+            onVideoUnmute: 'onVideoUnmute'
         }
     }
 

@@ -52,6 +52,16 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
                             className: 'next',
                             id: 'next',
                             title: 'Next'
+                        },
+                        muteButton: {
+                            name: 'Mute',
+                            className: 'muteButton',
+                            title: 'Mute',
+                            toggleTo: {
+                                name: 'Unmute',
+                                className: 'unnmuteButton',
+                                title: 'Unmute'
+                            }
                         }
                         // fullscreen: false // Todo
                     },
@@ -69,6 +79,9 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
                         enabled: true,
                         className: 'timeDigits',
                         separatorClass: 'timeSeparator'
+                    },
+                    volume: {
+                        enabled: true
                     },
                     sourceLoop: true
                 }
@@ -97,6 +110,12 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
             });
             videoElement.addEventListener(config['events']['onVideoPause'], function () {
                 console.log('Paused!')
+            });
+            videoElement.addEventListener(config['events']['onVideoMute'], function () {
+                console.log('Muted!')
+            });
+            videoElement.addEventListener(config['events']['onVideoUnmute'], function () {
+                console.log('Unmuted!')
             });
             videoElement.addEventListener(config['events']['onVideoEnded'], function () {
                 console.log('Ended!');

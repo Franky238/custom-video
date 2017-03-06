@@ -20,7 +20,7 @@ var VideoRenderer = (function (config, videoController) {
          */
         renderVideo: function (element) {
             var video = document.createElement('video');
-            video.innerHTML = 'Your browser doesn\'t support HTML5 video tag.'
+            video.innerHTML = 'Your browser doesn\'t support HTML5 video tag.';
             videoElement = video;
 
             element.appendChild(video);
@@ -442,6 +442,15 @@ var VideoRenderer = (function (config, videoController) {
             }
             var currentSec = parseInt(videoElement.currentTime, 10);
             currentTimeElement.innerHTML = videoController.formatDigits(currentSec);
+        },
+
+        renderMuteButton: function () {
+            var isMuted = videoController.toggleMute(videoElement);
+            if (isMuted) {
+                document.dispatchEvent(new Event(config['events']['onVideoMute']));
+            } else {
+                document.dispatchEvent(new Event(config['events']['onVideoUnmute']));
+            }
         }
     }
 
