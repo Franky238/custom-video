@@ -10,7 +10,8 @@ var Config = (function () {
             onVideoPause: 'onVideoPause',
             onVideoEnded: 'ended',
             onVideoMute: 'onVideoMute',
-            onVideoUnmute: 'onVideoUnmute'
+            onVideoUnmute: 'onVideoUnmute',
+            onResetControls: 'onResetControls'
         }
     }
 

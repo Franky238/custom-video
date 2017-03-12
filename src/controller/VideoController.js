@@ -100,6 +100,12 @@ var VideoController = (function (config) {
             return hours + ':' + minutes + ':' + rest;
         },
 
+        /**
+         * Toggle mute on video
+         *
+         * @param videoElement
+         * @returns {boolean|*}
+         */
         toggleMute: function (videoElement) {
             videoElement.muted = !videoElement.muted;
 

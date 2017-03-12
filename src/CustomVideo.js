@@ -104,18 +104,20 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
 
             document.addEventListener(config['events']['onVideoChanged'], function () {
                 resetControls();
+                resetPlayer();
             });
             videoElement.addEventListener(config['events']['onVideoPlay'], function () {
-                console.log('Played!')
+                console.log('Played!');
             });
             videoElement.addEventListener(config['events']['onVideoPause'], function () {
-                console.log('Paused!')
+                console.log('Paused!');
             });
-            videoElement.addEventListener(config['events']['onVideoMute'], function () {
-                console.log('Muted!')
+            document.addEventListener(config['events']['onVideoMute'], function () {
+                console.log('Muted!');
             });
-            videoElement.addEventListener(config['events']['onVideoUnmute'], function () {
-                console.log('Unmuted!')
+            document.addEventListener(config['events']['onVideoUnmute'], function () {
+                console.log('Unmuted!');
+                videoController.stopVideo(videoElement);
             });
             videoElement.addEventListener(config['events']['onVideoEnded'], function () {
                 console.log('Ended!');
@@ -176,8 +178,15 @@ var CustomVideo = (function (videoRenderer, videoController, config) {
         };
 
         var resetControls = function () {
+            document.dispatchEvent(new Event(config['events']['onResetControls']));
             videoRenderer.removeControls();
             handleControls();
+        };
+
+        var resetPlayer = function () {
+            videoElement.currentTime = 0;
+            videoElement.paused = true;
+            videoElement.muted = false;
         };
 
         // Execute construct

@@ -401,7 +401,10 @@ var VideoRenderer = (function (config, videoController) {
          * @returns {Element}
          */
         renderCurrentTime: function () {
-            return document.createElement('span');
+            var element = document.createElement('span');
+            element.innerHTML = '00:00';
+
+            return element;
         },
 
         /**
@@ -410,7 +413,10 @@ var VideoRenderer = (function (config, videoController) {
          * @returns {Element}
          */
         renderFullDuration: function () {
-            return document.createElement('span');
+            var element = document.createElement('span');
+            element.innerHTML = '00:00';
+
+            return element;
         },
 
         /**
@@ -444,8 +450,12 @@ var VideoRenderer = (function (config, videoController) {
             currentTimeElement.innerHTML = videoController.formatDigits(currentSec);
         },
 
+        /**
+         * Render mute button
+         */
         renderMuteButton: function () {
             var isMuted = videoController.toggleMute(videoElement);
+
             if (isMuted) {
                 document.dispatchEvent(new Event(config['events']['onVideoMute']));
             } else {
